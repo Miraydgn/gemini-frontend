@@ -60,8 +60,8 @@ export default function Home() {
               border: "none",
             }}
             styles={{
-              header: { color: "black", border: "solid 0.1px gray" },
-              body: { color: "black", border: "solid 0.1px gray" },
+              header: { color: "white", border: "solid 0.1px gray",backgroundColor: "#1B3C53" },
+              body: { color: "white", border: "solid 0.1px gray" ,backgroundColor: "#456882"},
             }}
             title="Haber Üretici"
           >
@@ -78,13 +78,14 @@ export default function Home() {
                   span={12}
                 >
                   <Form.Item
-                    label="Kategori"
-                    name="kategori"
-                    rules={[{ required: true, message: "Kategori giriniz!" }]}
-                    type="text"
-                  >
-                    <Input />
-                  </Form.Item>
+                label="Kategori"
+                name="kategori"
+                className="white-label"
+                rules={[{ required: true, message: "Kategori giriniz!" }]}
+              >
+                <Input />
+              </Form.Item>
+
                 </Col>
                 <Col
                   style={{
@@ -96,6 +97,7 @@ export default function Home() {
                   <Form.Item
                     label="Tarih"
                     name="tarih"
+                    className="white-label"
                     rules={[{ required: true, message: "Tarih giriniz!" }]}
                   >
                     <DatePicker style={{ width: "100%" }} />
@@ -111,6 +113,7 @@ export default function Home() {
                   <Form.Item
                     label="Lokasyon"
                     name="lokasyon"
+                    className="white-label"
                     rules={[{ required: true, message: "Lokasyon giriniz!" }]}
                     type="text"
                   >
@@ -127,6 +130,7 @@ export default function Home() {
                   <Form.Item
                     label="Kaynak"
                     name="kaynak"
+                    className="white-label"
                     rules={[{ required: true, message: "Kaynak giriniz!" }]}
                     type="text"
                   >
@@ -143,6 +147,7 @@ export default function Home() {
                   <Form.Item
                     label="Haberin Detayı"
                     name="detaylar"
+                    className="white-label"
                     rules={[{ required: true, message: "Detaylar giriniz!" }]}
                     type="text"
                   >
@@ -167,7 +172,8 @@ export default function Home() {
                   span={24}
                 >
                   {/* Nest Form.List */}
-                  <Form.Item label="Röportajlar">
+                  <Form.Item label="Röportajlar"
+                  className="white-label">
                     <Form.List name="roportajlar">
                       {(subFields, subOpt) => (
                         <div
@@ -229,7 +235,7 @@ export default function Home() {
                       name="submit"
                       htmlType="submit"
                       type="primary"
-                      style={{ width: "100%" , backgroundColor: "#5c8374"}}
+                      style={{ width: "100%" , backgroundColor: "#213448"}}
                       loading={loading}
                       onClick={() => handleHaberSubmit()}
                     >
@@ -249,15 +255,17 @@ export default function Home() {
               height: "50%",
               color: "white",
               border: "none",
+              backgroundColor: "#1B3C53",
             }}
             styles={{
-              header: { color: "black", border: "solid 0.1px gray" },
-              body: { color: "black", border: "solid 0.1px gray" },
+              header: { color: "white", border: "solid 0.1px gray" },
+              body: { color: "black", border: "solid 0.1px gray",backgroundColor: "#456882" },
             }}
             title="Haberler"
+           
           >
             <Row
-              style={{ width: "100%", height: "100%", color: "black" }}
+              style={{ width: "100%", height: "100%", color: "black",backgroundColor: "#456882" }}
               gutter={[10, 10]}
             >
               {generatedNews.map((news) => (
