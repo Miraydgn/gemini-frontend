@@ -1,95 +1,285 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+"use client";
+import React, { useEffect, useState } from "react";
+import { Row, Col, Card, Form, Input, DatePicker, Space, Button } from "antd";
 
+import { CloseOutlined } from "@ant-design/icons";
+import { formatDateToTurkish } from "../utils";
+import axios from "axios";
 export default function Home() {
-  return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="https://nextjs.org/icons/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol>
-          <li>
-            Get started by editing <code>src/app/page.js</code>.
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+  const [form] = Form.useForm();
+  const [loading, setLoading] = useState(false);
+  const [generatedNews, setGeneratedNews] = useState([]);
 
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+  const handleHaberSubmit = () => {
+    setLoading(true);
+    const ormObject = {
+      ...form.getFieldsValue(),
+      tarih: formatDateToTurkish(form.getFieldValue("tarih")),
+    };
+
+    axios
+      .post("https://localhost:7052/generate", ormObject)
+      .then((res) => {
+        console.log("Response: ", res);
+        setGeneratedNews([
+          ...generatedNews,
+          {
+            ...res.data,
+          },
+        ]);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.log("Error: ", err);
+        setLoading(false);
+      });
+  };
+
+  useEffect(() => {
+    console.log("Useffect Generated News: ", generatedNews);
+  }, [generatedNews]);
+
+  return (
+    <div
+      style={{
+        width: "100%",
+        height: "100%",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+      }}
+    >
+      <Row  dispaly="flex" style={{ width: "70%", height: "95%" }} gutter={[0, 0]}>
+        <Col span={24}>
+          {/** Haber Oluşturma */}
+          <Card
+            style={{
+              width: "100%",
+              height: "50%",
+              color: "white",
+              border: "none",
+            }}
+            styles={{
+              header: { color: "black", border: "solid 0.1px gray" },
+              body: { color: "black", border: "solid 0.1px gray" },
+            }}
+            title="Haber Üretici"
           >
-            <Image
-              className={styles.logo}
-              src="https://nextjs.org/icons/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={styles.secondary}
+            <Form form={form}>
+              <Row
+                style={{ width: "100%", height: "100%", color: "black" }}
+                gutter={[10, 10]}
+              >
+                <Col
+                  style={{
+                    padding: "10px",
+                    borderRadius: "5px",
+                  }}
+                  span={12}
+                >
+                  <Form.Item
+                    label="Kategori"
+                    name="kategori"
+                    rules={[{ required: true, message: "Kategori giriniz!" }]}
+                    type="text"
+                  >
+                    <Input />
+                  </Form.Item>
+                </Col>
+                <Col
+                  style={{
+                    padding: "10px",
+                    borderRadius: "5px",
+                  }}
+                  span={12}
+                >
+                  <Form.Item
+                    label="Tarih"
+                    name="tarih"
+                    rules={[{ required: true, message: "Tarih giriniz!" }]}
+                  >
+                    <DatePicker style={{ width: "100%" }} />
+                  </Form.Item>
+                </Col>
+                <Col
+                  style={{
+                    padding: "10px",
+                    borderRadius: "5px",
+                  }}
+                  span={12}
+                >
+                  <Form.Item
+                    label="Lokasyon"
+                    name="lokasyon"
+                    rules={[{ required: true, message: "Lokasyon giriniz!" }]}
+                    type="text"
+                  >
+                    <Input />
+                  </Form.Item>
+                </Col>
+                <Col
+                  style={{
+                    padding: "10px",
+                    borderRadius: "5px",
+                  }}
+                  span={12}
+                >
+                  <Form.Item
+                    label="Kaynak"
+                    name="kaynak"
+                    rules={[{ required: true, message: "Kaynak giriniz!" }]}
+                    type="text"
+                  >
+                    <Input />
+                  </Form.Item>
+                </Col>
+                <Col
+                  style={{
+                    padding: "10px",
+                    borderRadius: "5px",
+                  }}
+                  span={24}
+                >
+                  <Form.Item
+                    label="Haberin Detayı"
+                    name="detaylar"
+                    rules={[{ required: true, message: "Detaylar giriniz!" }]}
+                    type="text"
+                  >
+                    <Input />
+                  </Form.Item>
+                </Col>
+              </Row>
+              <Row
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  color: "black",
+                  border: "0.1px solid gray",
+                  borderRadius: "5px",
+                }}
+              >
+                <Col
+                  style={{
+                    padding: "10px",
+                    borderRadius: "5px",
+                  }}
+                  span={24}
+                >
+                  {/* Nest Form.List */}
+                  <Form.Item label="Röportajlar">
+                    <Form.List name="roportajlar">
+                      {(subFields, subOpt) => (
+                        <div
+                          style={{
+                            display: "flex",
+                            flexDirection: "column",
+                            rowGap: 16,
+                          }}
+                        >
+                          {subFields.map((subField) => (
+                            <Space key={subField.key}>
+                              <Form.Item noStyle name={[subField.name, "kisi"]}>
+                                <Input placeholder="Kişi" />
+                              </Form.Item>
+                              <Form.Item
+                                noStyle
+                                name={[subField.name, "alinti"]}
+                              >
+                                <Input placeholder="Röportaj" />
+                              </Form.Item>
+                              <CloseOutlined
+                                style={{ color: "red", cursor: "pointer" }}
+                                onClick={() => {
+                                  subOpt.remove(subField.name);
+                                }}
+                              />
+                            </Space>
+                          ))}
+                          <Button
+                            type="dashed"
+                            onClick={() => subOpt.add()}
+                            block
+                          >
+                            +Röportaj Ekle
+                          </Button>
+                        </div>
+                      )}
+                    </Form.List>
+                  </Form.Item>
+                </Col>
+              </Row>
+              <Row
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  color: "black",
+                  borderRadius: "5px",
+                }}
+              >
+                <Col
+                  style={{
+                    padding: "10px",
+                    borderRadius: "5px",
+                  }}
+                  span={24}
+                >
+                  <Form.Item type="submit">
+                    <Button
+                      name="submit"
+                      htmlType="submit"
+                      type="primary"
+                      style={{ width: "100%" , backgroundColor: "#5c8374"}}
+                      loading={loading}
+                      onClick={() => handleHaberSubmit()}
+                    >
+                      {loading ? "Haber Oluşturuluyor..." : "Haber Oluştur"}
+                    </Button>
+                  </Form.Item>
+                </Col>
+              </Row>
+            </Form>
+          </Card>
+        </Col>
+        <Col span={24}>
+          {/** Haberler */}
+          <Card
+            style={{
+              width: "100%",
+              height: "50%",
+              color: "white",
+              border: "none",
+            }}
+            styles={{
+              header: { color: "black", border: "solid 0.1px gray" },
+              body: { color: "black", border: "solid 0.1px gray" },
+            }}
+            title="Haberler"
           >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className={styles.footer}>
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+            <Row
+              style={{ width: "100%", height: "100%", color: "black" }}
+              gutter={[10, 10]}
+            >
+              {generatedNews.map((news) => (
+                <Col
+                  style={{
+                    padding: "10px",
+                    borderRadius: "5px",
+                  }}
+                  span={24}
+                >
+                  <Card title={news.baslik}>
+                    
+                      ÖZET: {news.ozet}
+                      <br/>
+                      HABER: {news.haberMetni}
+                      </Card>
+                </Col>
+              ))}
+            </Row>
+          </Card>
+        </Col>
+      </Row>
     </div>
   );
 }
